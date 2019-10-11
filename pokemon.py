@@ -1,25 +1,28 @@
 import csv
+import json
+import requests
 
 
 class Pokemon:
     
-    def __init__(self, name, type1, type2=None, final=False):
+    def __init__(self, name, speed, sdfc, satk, dfc, atk, hp, type1, type2=None):
         self.name = name
         self.type1 = type1
         self.type2 = type2
-        self.final = bool(final)
+        self.speed = speed
+        self.sdfc = sdfc
+        self.satk = satk
+        self.dfc = dfc
+        self.atk = atk
+        self.hp = hp
+        self.stat_total = speed + sdfc + satk + dfc + atk + hp
         
     def __repr__(self):
         if self.type2:
-            if self.final:
-                return"{} - a {} {} type Pokemon. It is in it's final form".format(self.name,self.type1,self.type2)
-            else:
-                return"{} - a {} {} type Pokemon".format(self.name,self.type1,self.type2)
+            return"{} - {} {} type Pokemon".format(self.name,self.type1,self.type2)
         else:
-            if self.final:
-                return"{} - a {} type Pokemon. It is in it's final form".format(self.name,self.type1)
-            else:
-                return"{} - a {} type Pokemon".format(self.name,self.type1)
+            return"{} - {} type Pokemon".format(self.name,self.type1)
+                
     
 class Team:
     
@@ -35,13 +38,16 @@ class Team:
     def __repr__(self):
         return "Your team consists of {}.".format(self.team)
     
-    def status(self):
+    def status(self, stats = None):
         print(self)
         print(self.types)
-        self.possibles()
+        if stats:
+            print(*self.possibles(stats), sep=   "\n")
+        else:
+            print(*self.possibles(), sep=   "\n")
         
     
-    def possibles(self, only_finals = True):
+    def possibles(self, stats = 436): #averega total stat is 436
         result = []
         for poke in pokedex:
             passbool = True
@@ -55,9 +61,12 @@ class Team:
                 if poke in result:
                     passbool = False
                     break
-                if only_finals and poke.final == False:
+                if poke.stat_total < stats:
                     passbool = False
                     break
+#                if only_finals and poke.final == False:
+#                    passbool = False
+#                    break
             if passbool:
                 result.append(poke)
 #                print("Added {}".format(poke.name))
@@ -88,13 +97,43 @@ class Team:
         if passbool2:
             self.types.remove(pokedict[pokemon].type2)
         
+
+
+        
 pokedex = []
 namelist = []
-with open("pokedex.csv", encoding='utf-8-sig') as pokedex_file:
-    poke_reader = csv.DictReader(pokedex_file) #create list of dictionaries
-    for row in poke_reader:
-        pokedex.append(Pokemon(row["Pokemon"], row["Type 1"], row["Type 2"], row["Final"]))
-        namelist.append(row["Pokemon"])
+#with open("pokedex.csv", encoding='utf-8-sig') as pokedex_file:
+#    poke_reader = csv.DictReader(pokedex_file) #create list of dictionaries
+#    for row in poke_reader:
+#        pokedex.append(Pokemon(row["Pokemon"], row["Type 1"], row["Type 2"], row["Final"]))
+#        namelist.append(row["Pokemon"])
+
+#pokeapi testbed WORKS
+url = "https://pokeapi.co/api/v2/pokemon?limit=151"
+JSONContent = requests.get(url).json()
+for number in range(len(JSONContent["results"])):
+    print(number)
+    JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}/".format(number+1)).json()
+    if len(JSONPoke["types"]) == 2:
+        pokedex.append(Pokemon(JSONPoke["name"],
+                               JSONPoke["stats"][0]["base_stat"],
+                               JSONPoke["stats"][1]["base_stat"],
+                               JSONPoke["stats"][2]["base_stat"],
+                               JSONPoke["stats"][3]["base_stat"],
+                               JSONPoke["stats"][4]["base_stat"],
+                               JSONPoke["stats"][5]["base_stat"], 
+                               JSONPoke["types"][1]["type"]["name"], 
+                               JSONPoke["types"][0]["type"]["name"]))
+    else:
+        pokedex.append(Pokemon(JSONPoke["name"],
+                               JSONPoke["stats"][0]["base_stat"],
+                               JSONPoke["stats"][1]["base_stat"],
+                               JSONPoke["stats"][2]["base_stat"],
+                               JSONPoke["stats"][3]["base_stat"],
+                               JSONPoke["stats"][4]["base_stat"],
+                               JSONPoke["stats"][5]["base_stat"], 
+                               JSONPoke["types"][0]["type"]["name"]))
+    namelist.append(JSONPoke["name"])
 
 
         
@@ -102,16 +141,23 @@ pokezip = zip(namelist, pokedex)
 pokedict = dict(pokezip)
 #print(pokedict)
 
-my_team = Team("Venusaur", "Charizard")
+
+
+
+
+#test_team = Team(JSONContent["results"][0]["name"])
+#test_team.status()
+
+my_team = Team("venusaur", "charizard")
 my_team.status()
 #print(*my_team.possibles(), sep = "\n") #print list in newlines
-my_team.add_poke("Starmie")
+my_team.add_poke("starmie")
 my_team.status()
-my_team.remove_poke("Venusaur")
+my_team.remove_poke("venusaur")
 my_team.status()
-my_team.add_poke("Omastar")
+my_team.add_poke("omastar")
 my_team.status()
-my_team.remove_poke("Starmie")
+my_team.remove_poke("starmie")
 my_team.status()
 #print(my_team)
 #print(my_team.types)
