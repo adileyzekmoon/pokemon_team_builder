@@ -1,4 +1,3 @@
-import csv
 import json
 import requests
 
@@ -39,12 +38,14 @@ class Team:
         return "Your team consists of {}.".format(self.team)
     
     def status(self, stats = None):
-        print(self)
-        print(self.types)
         if stats:
-            print(*self.possibles(stats), sep=   "\n")
+            return """Your team: {} consists of {} types. There are {} possible team mates. 
+            {}
+            """.format(self.team, self.types, len(self.possibles(stats)), self.possibles(stats))
         else:
-            print(*self.possibles(), sep=   "\n")
+            return """Your team: {} consists of {} types. There are {} possible team mates. 
+            {}
+            """.format(self.team, self.types, len(self.possibles()), self.possibles())
         
     
     def possibles(self, stats = 436): #averega total stat is 436
@@ -112,7 +113,7 @@ namelist = []
 url = "https://pokeapi.co/api/v2/pokemon?limit=151"
 JSONContent = requests.get(url).json()
 for number in range(len(JSONContent["results"])):
-    print(number)
+    #print(number)
     JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}/".format(number+1)).json()
     if len(JSONPoke["types"]) == 2:
         pokedex.append(Pokemon(JSONPoke["name"],
@@ -148,17 +149,17 @@ pokedict = dict(pokezip)
 #test_team = Team(JSONContent["results"][0]["name"])
 #test_team.status()
 
-my_team = Team("venusaur", "charizard")
-my_team.status()
+#my_team = Team("venusaur", "charizard")
+#my_team.status()
 #print(*my_team.possibles(), sep = "\n") #print list in newlines
-my_team.add_poke("starmie")
-my_team.status()
-my_team.remove_poke("venusaur")
-my_team.status()
-my_team.add_poke("omastar")
-my_team.status()
-my_team.remove_poke("starmie")
-my_team.status()
+#my_team.add_poke("starmie")
+#my_team.status()
+#my_team.remove_poke("venusaur")
+#my_team.status()
+#my_team.add_poke("omastar")
+#my_team.status()
+#my_team.remove_poke("starmie")
+#my_team.status()
 #print(my_team)
 #print(my_team.types)
 ##my_team.possibles()
