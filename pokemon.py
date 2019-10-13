@@ -25,7 +25,7 @@ class Pokemon:
     
 class Team:
     
-    def __init__(self, *pokemon):
+    def __init__(self, pokedex, *pokemon):
         self.team = []
         self.types = []
         for poke in pokemon:
@@ -50,7 +50,7 @@ class Team:
     
     def possibles(self, stats = 436): #averega total stat is 436
         result = []
-        for poke in pokedex:
+        for poke in pokedex.values():
             passbool = True
             for element in self.types:
                 if element == poke.type1:
@@ -76,7 +76,30 @@ class Team:
         return result
     
     def add_poke(self, pokemon):
-        self.team.append(pokedict[pokemon])
+        
+        with open ('pokedex.json') as file:
+            pokedex = json.load(file)
+            if pokedex[pokemon]["types"] == 2:
+                self.team.append(Pokemon(pokemon, 
+                                         pokedex[pokemon]["stats"][0]["base_stat"],
+                                         pokedex[pokemon]["stats"][1]["base_stat"],
+                                         pokedex[pokemon]["stats"][2]["base_stat"],
+                                         pokedex[pokemon]["stats"][3]["base_stat"],
+                                         pokedex[pokemon]["stats"][4]["base_stat"],
+                                         pokedex[pokemon]["stats"][5]["base_stat"],
+                                         pokedex[pokemon]["types"][1]["types"]["name"],
+                                         pokedex[pokemon]["types"][0]["types"]["name"]
+                                        ))
+            else:
+                self.team.append(Pokemon(pokemon, 
+                                         pokedex[pokemon]["stats"][0]["base_stat"],
+                                         pokedex[pokemon]["stats"][1]["base_stat"],
+                                         pokedex[pokemon]["stats"][2]["base_stat"],
+                                         pokedex[pokemon]["stats"][3]["base_stat"],
+                                         pokedex[pokemon]["stats"][4]["base_stat"],
+                                         pokedex[pokemon]["stats"][5]["base_stat"],
+                                         pokedex[pokemon]["types"][0]["types"]["name"]
+                                        ))
         if not(pokedict[pokemon].type1 in self.types):
             self.types.append(pokedict[pokemon].type1)
         if pokedict[pokemon].type2:
@@ -99,10 +122,44 @@ class Team:
             self.types.remove(pokedict[pokemon].type2)
         
 
-
-        
-pokedex = []
-namelist = []
+#class Pokedex():
+#    def __init__(self):
+#        self.namelist=[]
+#        self.pokelist=[]
+#        url = "https://pokeapi.co/api/v2/pokedex/2/"
+#        JSONContent = requests.get(url).json()
+#        for number in range(len(JSONContent["pokemon_entries"])):
+#            print(number)
+#            JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}".format(JSONContent["pokemon_entries"][number]["pokemon_species"]["name"])).json()
+#            if len(JSONPoke["types"]) == 2:
+#                self.pokelist.append(Pokemon(JSONPoke["name"],
+#                                       JSONPoke["stats"][0]["base_stat"],
+#                                       JSONPoke["stats"][1]["base_stat"],
+#                                       JSONPoke["stats"][2]["base_stat"],
+#                                       JSONPoke["stats"][3]["base_stat"],
+#                                       JSONPoke["stats"][4]["base_stat"],
+#                                       JSONPoke["stats"][5]["base_stat"], 
+#                                       JSONPoke["types"][1]["type"]["name"], 
+#                                       JSONPoke["types"][0]["type"]["name"]))
+#            else:
+#                self.pokelist.append(Pokemon(JSONPoke["name"],
+#                                       JSONPoke["stats"][0]["base_stat"],
+#                                       JSONPoke["stats"][1]["base_stat"],
+#                                       JSONPoke["stats"][2]["base_stat"],
+#                                       JSONPoke["stats"][3]["base_stat"],
+#                                       JSONPoke["stats"][4]["base_stat"],
+#                                       JSONPoke["stats"][5]["base_stat"], 
+#                                       JSONPoke["types"][0]["type"]["name"]))
+#            self.namelist.append(JSONPoke["name"])
+#        self.dex = dict(zip(self.namelist, self.pokelist))
+#        with open("pokedex.json", 'w') as outfile:
+#        print(self.dex)
+#        
+#        
+#        
+##        
+#pokedex = []
+#namelist = []
 #with open("pokedex.csv", encoding='utf-8-sig') as pokedex_file:
 #    poke_reader = csv.DictReader(pokedex_file) #create list of dictionaries
 #    for row in poke_reader:
@@ -110,36 +167,36 @@ namelist = []
 #        namelist.append(row["Pokemon"])
 
 #pokeapi testbed WORKS
-url = "https://pokeapi.co/api/v2/pokemon?limit=151"
-JSONContent = requests.get(url).json()
-for number in range(len(JSONContent["results"])):
-    print(number)
-    JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}/".format(number+1)).json()
-    if len(JSONPoke["types"]) == 2:
-        pokedex.append(Pokemon(JSONPoke["name"],
-                               JSONPoke["stats"][0]["base_stat"],
-                               JSONPoke["stats"][1]["base_stat"],
-                               JSONPoke["stats"][2]["base_stat"],
-                               JSONPoke["stats"][3]["base_stat"],
-                               JSONPoke["stats"][4]["base_stat"],
-                               JSONPoke["stats"][5]["base_stat"], 
-                               JSONPoke["types"][1]["type"]["name"], 
-                               JSONPoke["types"][0]["type"]["name"]))
-    else:
-        pokedex.append(Pokemon(JSONPoke["name"],
-                               JSONPoke["stats"][0]["base_stat"],
-                               JSONPoke["stats"][1]["base_stat"],
-                               JSONPoke["stats"][2]["base_stat"],
-                               JSONPoke["stats"][3]["base_stat"],
-                               JSONPoke["stats"][4]["base_stat"],
-                               JSONPoke["stats"][5]["base_stat"], 
-                               JSONPoke["types"][0]["type"]["name"]))
-    namelist.append(JSONPoke["name"])
-
-
-        
-pokezip = zip(namelist, pokedex)
-pokedict = dict(pokezip)
+#url = "https://pokeapi.co/api/v2/pokemon?limit=151"
+#JSONContent = requests.get(url).json()
+#for number in range(len(JSONContent["results"])):
+#    print(number)
+#    JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}/".format(number+1)).json()
+#    if len(JSONPoke["types"]) == 2:
+#        pokedex.append(Pokemon(JSONPoke["name"],
+#                               JSONPoke["stats"][0]["base_stat"],
+#                               JSONPoke["stats"][1]["base_stat"],
+#                               JSONPoke["stats"][2]["base_stat"],
+#                               JSONPoke["stats"][3]["base_stat"],
+#                               JSONPoke["stats"][4]["base_stat"],
+#                               JSONPoke["stats"][5]["base_stat"], 
+#                               JSONPoke["types"][1]["type"]["name"], 
+#                               JSONPoke["types"][0]["type"]["name"]))
+#    else:
+#        pokedex.append(Pokemon(JSONPoke["name"],
+#                               JSONPoke["stats"][0]["base_stat"],
+#                               JSONPoke["stats"][1]["base_stat"],
+#                               JSONPoke["stats"][2]["base_stat"],
+#                               JSONPoke["stats"][3]["base_stat"],
+#                               JSONPoke["stats"][4]["base_stat"],
+#                               JSONPoke["stats"][5]["base_stat"], 
+#                               JSONPoke["types"][0]["type"]["name"]))
+#    namelist.append(JSONPoke["name"])
+#
+#
+#        
+#pokezip = zip(namelist, pokedex)
+#pokedict = dict(pokezip)
 #print(pokedict)
 
 
