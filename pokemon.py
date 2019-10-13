@@ -15,19 +15,60 @@ class Pokemon:
         self.atk = atk
         self.hp = hp
         self.stat_total = speed + sdfc + satk + dfc + atk + hp
+        self.sprite = ""
+        with open('pokesprites.json') as file:
+            sprites = json.load(file)
+            self.sprite = sprites[name]
+        print(self.sprite)
         
     def __repr__(self):
         if self.type2:
             return"{} - {} {} type Pokemon".format(self.name,self.type1,self.type2)
         else:
             return"{} - {} type Pokemon".format(self.name,self.type1)
+        
+    def display_sprite(self):
+        return self.sprite
                 
     
 class Team:
     
-    def __init__(self, pokedex, *pokemon):
+    def __init__(self, *pokemon):
         self.team = []
         self.types = []
+        pokelist = []
+        namelist =[]
+        with open ('pokedex.json') as file:
+            pokedex = json.load(file)
+            for name in pokedex.keys():
+                if len(pokedex[name]["types"]) == 2:
+                    print("dual type")
+                    pokelist.append(Pokemon(name, 
+                                                 pokedex[name]["stats"][0]["base_stat"],
+                                                 pokedex[name]["stats"][1]["base_stat"],
+                                                 pokedex[name]["stats"][2]["base_stat"],
+                                                 pokedex[name]["stats"][3]["base_stat"],
+                                                 pokedex[name]["stats"][4]["base_stat"],
+                                                 pokedex[name]["stats"][5]["base_stat"],
+                                                 pokedex[name]["types"][1]["type"]["name"],
+                                                 pokedex[name]["types"][0]["type"]["name"]
+                                        ))
+                else:
+                    print("single type")
+                    pokelist.append(Pokemon(name, 
+                                                 pokedex[name]["stats"][0]["base_stat"],
+                                                 pokedex[name]["stats"][1]["base_stat"],
+                                                 pokedex[name]["stats"][2]["base_stat"],
+                                                 pokedex[name]["stats"][3]["base_stat"],
+                                                 pokedex[name]["stats"][4]["base_stat"],
+                                                 pokedex[name]["stats"][5]["base_stat"],
+                                                 pokedex[name]["types"][0]["type"]["name"]
+                                        ))
+                namelist.append(name)
+        
+        self.pokedict = dict(zip(namelist, pokelist))
+        print(self.pokedict)
+                    
         for poke in pokemon:
             self.team.append(pokedict[poke])
             self.types.append(pokedict[poke].type1)
@@ -40,17 +81,15 @@ class Team:
     def status(self, stats = None):
         if stats:
             return """Your team: {} consists of {} types. There are {} possible team mates. 
-            {}
-            """.format(self.team, self.types, len(self.possibles(stats)), self.possibles(stats))
+            """.format(self.team, self.types, len(self.possibles(stats)))
         else:
             return """Your team: {} consists of {} types. There are {} possible team mates. 
-            {}
-            """.format(self.team, self.types, len(self.possibles()), self.possibles())
+            """.format(self.team, self.types, len(self.possibles()))
         
     
     def possibles(self, stats = 436): #averega total stat is 436
         result = []
-        for poke in pokedex.values():
+        for poke in self.pokedict.values():
             passbool = True
             for element in self.types:
                 if element == poke.type1:
@@ -71,55 +110,31 @@ class Team:
             if passbool:
                 result.append(poke)
 #                print("Added {}".format(poke.name))
-        print("There are {} possible Pokemon team members.".format(len(result)))
 #                print("Added {}".format(poke.name))
         return result
     
     def add_poke(self, pokemon):
-        
-        with open ('pokedex.json') as file:
-            pokedex = json.load(file)
-            if pokedex[pokemon]["types"] == 2:
-                self.team.append(Pokemon(pokemon, 
-                                         pokedex[pokemon]["stats"][0]["base_stat"],
-                                         pokedex[pokemon]["stats"][1]["base_stat"],
-                                         pokedex[pokemon]["stats"][2]["base_stat"],
-                                         pokedex[pokemon]["stats"][3]["base_stat"],
-                                         pokedex[pokemon]["stats"][4]["base_stat"],
-                                         pokedex[pokemon]["stats"][5]["base_stat"],
-                                         pokedex[pokemon]["types"][1]["types"]["name"],
-                                         pokedex[pokemon]["types"][0]["types"]["name"]
-                                        ))
-            else:
-                self.team.append(Pokemon(pokemon, 
-                                         pokedex[pokemon]["stats"][0]["base_stat"],
-                                         pokedex[pokemon]["stats"][1]["base_stat"],
-                                         pokedex[pokemon]["stats"][2]["base_stat"],
-                                         pokedex[pokemon]["stats"][3]["base_stat"],
-                                         pokedex[pokemon]["stats"][4]["base_stat"],
-                                         pokedex[pokemon]["stats"][5]["base_stat"],
-                                         pokedex[pokemon]["types"][0]["types"]["name"]
-                                        ))
-        if not(pokedict[pokemon].type1 in self.types):
-            self.types.append(pokedict[pokemon].type1)
-        if pokedict[pokemon].type2:
-            if not(pokedict[pokemon].type2 in self.types):
-                self.types.append(pokedict[pokemon].type2)
+        self.team.append(self.pokedict[pokemon])
+        if not(self.pokedict[pokemon].type1 in self.types):
+            self.types.append(self.pokedict[pokemon].type1)
+        if self.pokedict[pokemon].type2:
+            if not(self.pokedict[pokemon].type2 in self.types):
+                self.types.append(self.pokedict[pokemon].type2)
                 
     def remove_poke(self, pokemon):
-        self.team.remove(pokedict[pokemon])
+        self.team.remove(self.pokedict[pokemon])
         passbool1 = True
         passbool2 = True
         for poke in self.team:
-            if pokedict[pokemon].type1 == poke.type1 or pokedict[pokemon].type1 == poke.type2:
+            if self.pokedict[pokemon].type1 == poke.type1 or self.pokedict[pokemon].type1 == poke.type2:
                 passbool1 = False
             if pokedict[pokemon].type2:
-                if pokedict[pokemon].type2 == poke.type1 or pokedict[pokemon].type2 == poke.type2:
+                if self.pokedict[pokemon].type2 == poke.type1 or self.pokedict[pokemon].type2 == poke.type2:
                     passbool2 = False
         if passbool1:
-            self.types.remove(pokedict[pokemon].type1)
+            self.types.remove(self.pokedict[pokemon].type1)
         if passbool2:
-            self.types.remove(pokedict[pokemon].type2)
+            self.types.remove(self.pokedict[pokemon].type2)
         
 
 #class Pokedex():

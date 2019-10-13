@@ -9,9 +9,7 @@ for number in range(len(JSONContent["pokemon_entries"])):
     print(number)
     placeholder = {}
     JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}".format(JSONContent["pokemon_entries"][number]["pokemon_species"]["name"])).json()
-    placeholder["types"] = JSONPoke["types"]
-    placeholder["stats"] = JSONPoke["stats"]
-    pokedex[JSONPoke["name"]] = placeholder
+    pokedex[JSONPoke["name"]] = JSONPoke["sprites"]["front_default"]
 
-with open ("pokedex.json",'w') as pokeout:
+with open ("pokesprites.json",'w') as pokeout:
     json.dump(pokedex, pokeout)
