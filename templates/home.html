@@ -7,15 +7,23 @@
     <body>
         <h1>Enter pokemon:</h1>
         <form action="http://localhost:5000/" method=get>
-            <p><input type="text" name="pokemon"/></p>
-            <p><input type="submit" value="submit"/></p>
+            <p><input type="text" name="pokemon"></p>
+            <p><input type="submit" value="submit"></p>
         </form>
-        {% for poke in poketeam.team%}
-        <img src={{poke.sprite}} title={{poke.name}}>
+        {% for pokemember in poketeam.team%}
+        <form style="display: inline"action="http://localhost:5000/" method=get>
+            <input type="hidden" name="removePoke" value={{pokemember.name}}>
+            <input type="image" src={{pokemember.sprite}} title={{pokemember.name}} value="submit">
+        </form>
         {% endfor %}
         <h4>{{poketeam.status(0)}}</h4>
-        {% for poke in poketeam.possibles(0)%}
-        <img src={{poke.sprite}} title={{poke.name}}>
+        <div>
+        {% for poke in poketeam.possibles(0)%}        
+        <form style="display: inline" action="http://localhost:5000/" method=get>
+            <input type="hidden" name="pokemon" value={{poke.name}}>
+            <input type="image" src={{poke.sprite}} title={{poke.name}} value="submit">
+        </form>
         {% endfor %}
+        </div>
     </body>
 </html>

@@ -9,8 +9,11 @@ poketeam = Team()
 def home():
     if request.method == 'GET':
         poke = request.args.get('pokemon')
+        removePoke = request.args.get('removePoke')
         if poke:
             poketeam.add_poke(poke.lower())
+        if removePoke:
+            poketeam.remove_poke(removePoke.lower())
     
     
     return render_template('home.html', poketeam=poketeam)

@@ -122,19 +122,27 @@ class Team:
                 self.types.append(self.pokedict[pokemon].type2)
                 
     def remove_poke(self, pokemon):
+        remove1 = True
+        remove2 = True
         self.team.remove(self.pokedict[pokemon])
-        passbool1 = True
-        passbool2 = True
+        if len(self.team)==0:
+            self.types.clear()
+            return
         for poke in self.team:
-            if self.pokedict[pokemon].type1 == poke.type1 or self.pokedict[pokemon].type1 == poke.type2:
-                passbool1 = False
-            if pokedict[pokemon].type2:
-                if self.pokedict[pokemon].type2 == poke.type1 or self.pokedict[pokemon].type2 == poke.type2:
-                    passbool2 = False
-        if passbool1:
+            if (self.pokedict[pokemon].type1==poke.type1) or (self.pokedict[pokemon].type1==poke.type2):
+                remove1 = False
+            if self.pokedict[pokemon].type2:
+                for poke in self.team:
+                    if (self.pokedict[pokemon].type2==poke.type1) or (self.pokedict[pokemon].type2==poke.type2):
+                        remove2 = False
+            if not(self.pokedict[pokemon].type2):
+                remove2=False
+        if remove1:
             self.types.remove(self.pokedict[pokemon].type1)
-        if passbool2:
+        if remove2:
             self.types.remove(self.pokedict[pokemon].type2)
+        
+
         
 
 #class Pokedex():
