@@ -113,7 +113,7 @@ namelist = []
 url = "https://pokeapi.co/api/v2/pokemon?limit=151"
 JSONContent = requests.get(url).json()
 for number in range(len(JSONContent["results"])):
-    #print(number)
+    print(number)
     JSONPoke = requests.get("https://pokeapi.co/api/v2/pokemon/{}/".format(number+1)).json()
     if len(JSONPoke["types"]) == 2:
         pokedex.append(Pokemon(JSONPoke["name"],
