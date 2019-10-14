@@ -87,7 +87,7 @@ class Team:
             """.format(self.team, self.types, len(self.possibles()))
         
     
-    def possibles(self, stats = 436): #averega total stat is 436
+    def possibles(self, stats = 0): #averega total stat is 436
         result = []
         for poke in self.pokedict.values():
             passbool = True

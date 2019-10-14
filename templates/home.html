@@ -3,27 +3,56 @@
     <head>
         <title>
         </title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     </head>
     <body>
-        <h1>Enter pokemon:</h1>
-        <form action="http://localhost:5000/" method=get>
-            <p><input type="text" name="pokemon"></p>
-            <p><input type="submit" value="submit"></p>
-        </form>
-        {% for pokemember in poketeam.team%}
-        <form style="display: inline"action="http://localhost:5000/" method=get>
-            <input type="hidden" name="removePoke" value={{pokemember.name}}>
-            <input type="image" src={{pokemember.sprite}} title={{pokemember.name}} value="submit">
-        </form>
-        {% endfor %}
-        <h4>{{poketeam.status(0)}}</h4>
+        <header>
+            <nav id="navbar" class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+                <a class="navbar-brand" href="#">Pokemon Team Builder</a>            
+            </nav>
+        </header>
         <div>
-        {% for poke in poketeam.possibles(0)%}        
-        <form style="display: inline" action="http://localhost:5000/" method=get>
-            <input type="hidden" name="pokemon" value={{poke.name}}>
-            <input type="image" src={{poke.sprite}} title={{poke.name}} value="submit">
-        </form>
+            <div class="container-fluid d-flex align-items-center justify-content-center h-100">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-md-10">
+                        <h2 class="display-4 font-weight-bold text-dark pt-5 my-2">Welcome to my Pokemon Team Builder</h2>
+
+                        <h4 class="text-dark my-4">Type in a Pokemon name or choose from below.</h4>
+
+                        <form action="http://localhost:5000/" method=get>
+                            <div class="form-group">
+                                <input class="form-control" type="text" placeholder="Pokemon" name="pokemon">
+                                <button type="submit" class="btn btn-primary mt-2" value="submit">Enter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="container-fluid">
+            <div class="row justify-content-center" >
+        {% for pokemember in poketeam.team%}
+                <form action="http://localhost:5000/" method=get>
+                    <input type="hidden" name="removePoke" value={{pokemember.name}}>
+                    <input type="image" src={{pokemember.sprite}} title={{pokemember.name}} value="submit">
+                </form>
         {% endfor %}
+            </div>
+        </div>
+        <h4>{{poketeam.status(0)}}</h4>
+        <div class="container-fluid">
+            <div class="row">
+        {% for poke in poketeam.possibles(0)%}
+                <div class="col">
+                    <form action="http://localhost:5000/" method=get>
+                        <input type="hidden" name="pokemon" value={{poke.name}}>
+                        <input type="image" src={{poke.sprite}} title={{poke.name}} value="submit">
+                    </form>
+                </div>
+        {% endfor %}
+            </div>
         </div>
     </body>
 </html>
