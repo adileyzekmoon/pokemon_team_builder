@@ -2,24 +2,25 @@
 version: 2.1
 
 jobs:
-  print_hello:
+  save_hello_world_output:
     docker: 
       - image: circleci/node:13.8.0
     steps:
       - run:
-          echo "hello"
-  print_world:
+        echo "hello world" > output.txt
+      - persist_to_workspace:
+        root: /tmp/workspace
+        paths: 
+          - output.txt
+  print_output_file:
     docker: 
       - image: circleci/node:13.8.0
     steps:
+      - attach_workspace:
+        at: /tmp/workspace
       - run:
-          echo "world"
-  print_name:
-    docker: 
-      - image: circleci/node:13.8.0
-    steps:
-      - run:
-          echo $name
+        cat output.txt
+
 
 # Orchestrate or schedule a set of jobs
 workflows:
