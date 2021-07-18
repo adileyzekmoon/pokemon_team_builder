@@ -7,10 +7,12 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - run:
-          echo "hello world" > output.txt
+            mkdir /tmp/workspace
+      - run:
+          echo "hello world" > /tmp/workspace/output.txt
       
       - persist_to_workspace:
-          root: ~
+          root: /tmp/workspace
           paths: 
             - output.txt
   print_output_file:
@@ -18,9 +20,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - attach_workspace:
-          at: ~
+          at: /
       - run:
-          cat output.txt
+          cat /output.txt
 
 
 # Orchestrate or schedule a set of jobs
