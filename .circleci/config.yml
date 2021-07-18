@@ -7,7 +7,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - run:
-        echo "hello world" > output.txt
+          echo "hello world" > output.txt
       - persist_to_workspace:
           root: /tmp/workspace
           paths: 
@@ -19,7 +19,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-        cat output.txt
+          cat output.txt
 
 
 # Orchestrate or schedule a set of jobs
@@ -28,7 +28,7 @@ workflows:
   welcome:
     # Run the welcome/run job in its own container
     jobs:
-      - print_hello
-      - print_world:
-          requires: [print_hello]
-      - print_name
+      - save_hello_world_output
+      - print_output_file:
+          requires: [save_hello_world_output]
+
