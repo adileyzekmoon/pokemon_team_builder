@@ -7,13 +7,13 @@ orbs:
 jobs:
   print_hello:
     docker: 
-      image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       - run:
           echo "hello"
   print_world:
     docker: 
-      image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       - run:
           echo "world"
