@@ -9,7 +9,7 @@ jobs:
       - run:
             mkdir ~/workspace
       - run:
-          echo "hello world" > workspace/output.txt
+          echo "hello world" > ~/workspace/output.txt
       
       - persist_to_workspace:
           root: ~/workspace
@@ -22,7 +22,7 @@ jobs:
       - attach_workspace:
           at: ~/workspace
       - run:
-          cat workspace/output.txt
+          cat ~/workspace/output.txt
 
 
 # Orchestrate or schedule a set of jobs
